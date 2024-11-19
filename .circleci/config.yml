@@ -1,0 +1,22 @@
+version: 2.1
+jobs:
+  test-PetStore:
+    docker:
+      - image: cimg/node:20.6
+    steps:
+      - checkout
+      - run:
+           name: Fix npm Permissions
+           command: sudo chown -R $(whoami) /usr/local/lib/node_modules
+      - run:
+          name: Install Newman
+          command: sudo npm install -g newman
+      - run:
+          name: "test-PetStore"
+          command: |
+            newman run Swagger_Petstore.postman_collection.json -e Pet_env.postman_environment.json
+
+workflows:
+  test-PetStore-workflow: 
+    jobs:
+      - test-PetStore
